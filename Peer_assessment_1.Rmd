@@ -74,4 +74,73 @@ legend("topright",pch = 18,lty=0, col = "blue",
        legend = paste("Max Value = ",round(maxSteps$x,1)))
 ```
 
-Maximum value of `r round(maxSteps$x,1)` at time interval `r maxSteps$Group.1`
+Maximum value of `r round(maxSteps$x,1)` at time interval `r maxSteps$Group.1`  
+  
+### Imputing missing values
+  
+Find the total mising values
+
+```{r sum_missing}
+sum(is.na(data$steps))
+```
+
+To fill the missing values:
+- FInd the average number of steps taken on each day
+- Merge that column to the data
+- Create a function which would replace the NA values with mean value of that time interval
+
+```{r fill_na}
+names(avgSteps) <- c("interval", "meanSteps")
+data <- merge(data,avgSteps,by="interval")
+
+fill_na <- function(a,b){
+  if(is.na(a))
+     return(b)
+  else
+     return(a)
+}
+for (i in 1:nrow(data)) {
+  data$steps[i] <- fill_na(data$steps[i],data$meanSteps[i])
+}
+```
+
+Create histogram of the number of steps per day from the new data set
+
+```{r total_steps_new}
+totalSteps <- aggregate(data$steps,by=list(data$date),FUN=sum)
+
+new_mean_value <- round(mean(totalSteps$x),1)
+new_median_value <- round(median(totalSteps$x),1)
+
+hist(totalSteps$x,
+     main = "Total Number of Steps Taken Per Day",
+     breaks = 20,
+     xlab = "Total Number of Steps")
+
+abline(v=new_mean_value,lwd=2,col="blue")
+abline(v=new_median_value,lwd=2,col="red")
+
+legend('topright', lty = 1, lwd = 3, col = c("blue", "red"),
+               cex = .8, 
+               legend = c(paste('Mean: ', new_mean_value),
+               paste('Median: ', new_median_value))
+               )
+```
+
+Both the mean and median have increased  
+Mean value has changed from `r mean_value` steps per day to `r new_mean_value` steps per day  
+Median value has changed from `r median_value` steps per day to `r new_median_value` steps per day  
+
+
+### Are there differences in activity patterns between weekdays and weekends?
+
+- Add a factor variable day which indicates weekend or weekday
+- Compare the weekend and weekday activity
+```{r}
+data$day = ifelse(as.POSIXlt(as.Date(data$date))$wday%%6 == 
+    0, "weekend", "weekday")
+comparisonData = aggregate(steps ~ interval + day, data, mean)
+library(lattice)
+xyplot(steps ~ interval | factor(day), data = comparisonData, aspect = 1/2, 
+    type = "l")
+```

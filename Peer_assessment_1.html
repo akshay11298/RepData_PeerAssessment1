@@ -129,8 +129,8 @@ $(document).ready(function () {
 </div>
 
 
-<div id="loading-and-preprocessing-the-data" class="section level2">
-<h2>Loading and preprocessing the data</h2>
+<div id="loading-and-preprocessing-the-data" class="section level3">
+<h3>Loading and preprocessing the data</h3>
 <p>Description of this data from course is as following :</p>
 <p><em>This assignment makes use of data from a personal activity monitoring device. This device collects data at 5 minute intervals through out the day. The data consists of two months of data from an anonymous individual collected during the months of October and November, 2012 and include the number of steps taken in 5 minute intervals each day.</em></p>
 <p>There are three variables in the dataset:</p>
@@ -142,9 +142,10 @@ $(document).ready(function () {
 <p>Unzip and load the data into environment</p>
 <pre class="r"><code>unzip(&quot;activity.zip&quot;)
 data &lt;- read.csv(&quot;activity.csv&quot;)</code></pre>
+<hr />
 </div>
-<div id="what-is-mean-total-number-of-steps-taken-per-day" class="section level2">
-<h2>What is mean total number of steps taken per day?</h2>
+<div id="what-is-mean-total-number-of-steps-taken-per-day" class="section level3">
+<h3>What is mean total number of steps taken per day?</h3>
 <p>Create a histogram for the frequency of umber of steps taken<br />
 Calculate the mean and median and show them in the graph</p>
 <pre class="r"><code>totalSteps &lt;- aggregate(data$steps,by=list(data$date),na.rm=T,FUN=sum)

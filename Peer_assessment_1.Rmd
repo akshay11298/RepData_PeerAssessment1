@@ -19,7 +19,34 @@ There are three variables in the dataset:
 
 Unzip and load the data into environment
 
-```{r}
+```{r loading}
 unzip("activity.zip")
 data <- read.csv("activity.csv")
+```
+
+
+## What is mean total number of steps taken per day?
+
+Create a histogram for the frequency of umber of steps taken  
+Calculate the mean and median and show them in the graph  
+
+```{r mean_of_steps}
+totalSteps <- aggregate(data$steps,by=list(data$date),na.rm=T,FUN=sum)
+
+mean_value <- round(mean(totalSteps$x),1)
+median_value <- round(median(totalSteps$x),1)
+
+hist(totalSteps$x,
+     main = "Total Number of Steps Taken Per Day",
+     breaks = 20,
+     xlab = "Total Number of Steps")
+
+abline(v=mean_value,lwd=2,col="blue")
+abline(v=median_value,lwd=2,col="red")
+
+legend('topright', lty = 1, lwd = 3, col = c("blue", "red"),
+               cex = .8, 
+               legend = c(paste('Mean: ', mean_value),
+               paste('Median: ', median_value))
+               )
 ```

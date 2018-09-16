@@ -21,7 +21,8 @@ There are three variables in the dataset:
   
 Unzip and load the data into environment  
   
-```{r loading}
+
+```r
 unzip("activity.zip")
 data <- read.csv("activity.csv")
 ```
@@ -33,7 +34,8 @@ data <- read.csv("activity.csv")
 - Create a histogram for the frequency of number of steps taken per day  
 - Calculate the mean and median and show them in the graph  
   
-```{r total_steps}
+
+```r
 totalSteps <- aggregate(data$steps,by=list(data$date),na.rm=T,FUN=sum)
 
 mean_value <- round(mean(totalSteps$x),1)
@@ -53,6 +55,8 @@ legend('topright', lty = 1, lwd = 3, col = c("blue", "red"),
                paste('Median: ', median_value))
                )
 ```
+
+![](Peer_assessment_1_files/figure-html/total_steps-1.png)<!-- -->
   
 
 ### What is the average daily activity pattern?  
@@ -61,7 +65,8 @@ legend('topright', lty = 1, lwd = 3, col = c("blue", "red"),
 - Plot a graph between time interval and average number of steps taken 
 - Mention the maxima
 
-```{r avg_steps_by_interval}
+
+```r
 avgSteps <- aggregate(data$steps,by=list(data$interval),FUN=mean,na.rm=T)
 maxSteps <- avgSteps[which.max(avgSteps$x),]
 
@@ -76,14 +81,21 @@ legend("topright",pch = 18,lty=0, col = "blue",
        legend = paste("Max Value = ",round(maxSteps$x,1)))
 ```
 
-Maximum value of `r round(maxSteps$x,1)` at time interval `r maxSteps$Group.1`  
+![](Peer_assessment_1_files/figure-html/avg_steps_by_interval-1.png)<!-- -->
+
+Maximum value of 206.2 at time interval 835  
   
 ### Imputing missing values
   
 Find the total mising values
 
-```{r sum_missing}
+
+```r
 sum(is.na(data$steps))
+```
+
+```
+## [1] 2304
 ```
 
 To fill the missing values:
@@ -91,7 +103,8 @@ To fill the missing values:
 - Merge that column to the data
 - Create a function which would replace the NA values with mean value of that time interval
 
-```{r fill_na}
+
+```r
 names(avgSteps) <- c("interval", "meanSteps")
 data <- merge(data,avgSteps,by="interval")
 
@@ -108,7 +121,8 @@ for (i in 1:nrow(data)) {
 
 Create histogram of the number of steps per day from the new data set
 
-```{r total_steps_new}
+
+```r
 totalSteps <- aggregate(data$steps,by=list(data$date),FUN=sum)
 
 new_mean_value <- round(mean(totalSteps$x),1)
@@ -129,16 +143,19 @@ legend('topright', lty = 1, lwd = 3, col = c("blue", "red"),
                )
 ```
 
+![](Peer_assessment_1_files/figure-html/total_steps_new-1.png)<!-- -->
+
 Both the mean and median have increased  
-Mean value has changed from `r mean_value` steps per day to `r new_mean_value` steps per day  
-Median value has changed from `r median_value` steps per day to `r new_median_value` steps per day  
+Mean value has changed from 9354.2 steps per day to 1.07662\times 10^{4} steps per day  
+Median value has changed from 1.0395\times 10^{4} steps per day to 1.07662\times 10^{4} steps per day  
 
 
 ### Are there differences in activity patterns between weekdays and weekends?
 
 - Add a factor variable day which indicates weekend or weekday
 - Compare the weekend and weekday activity
-```{r}
+
+```r
 data$day = ifelse(as.POSIXlt(as.Date(data$date))$wday%%6 == 
     0, "weekend", "weekday")
 comparisonData = aggregate(steps ~ interval + day, data, mean)
@@ -146,3 +163,5 @@ library(lattice)
 xyplot(steps ~ interval | factor(day), data = comparisonData, aspect = 1/2, 
     type = "l")
 ```
+
+![](Peer_assessment_1_files/figure-html/unnamed-chunk-1-1.png)<!-- -->
